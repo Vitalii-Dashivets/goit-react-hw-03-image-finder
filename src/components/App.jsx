@@ -18,26 +18,25 @@ export class App extends Component {
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
-  // showButton = () => {
-  //   this.setState({ showButton: true });
-  // };
-  // toggleLoader = () => {
-  //   return this.setState(({ showLoader }) => ({ showLoader: !showLoader }));
-  // };
+
   setSearchValue = value => {
     return this.setState({ searchValue: value });
   };
+
   onLoadMore = () => {
     this.setStatus('pending');
     return this.setState(prevState => ({ page: prevState.page + 1 }));
   };
+
   toShowLargeImage = url => {
     this.toggleModal();
     return this.setState({ toShowLargeImage: url });
   };
+
   setStatus = value => {
     this.setState({ status: value });
   };
+
   render() {
     const { searchValue, page, status, showModal } = this.state;
     let showButton = false;
@@ -80,24 +79,3 @@ export class App extends Component {
     );
   }
 }
-// return (
-//   // <div>
-//     <Searchbar setSearchValue={this.setSearchValue} />
-//     // if(status === 'idle') {}
-//     if (status === 'pending') {<Loader />}
-//     if(status==='rejected')
-//     <ImageGallery
-//       searchValue={searchValue}
-//       page={page}
-//       setUrlLargeImage={this.toShowLargeImage}
-//       showButton={this.showButton}
-//     />
-//     {showButton && <Button Click={this.onLoadMore} />}
-//     {showModal && (
-//       <Modal
-//         largeImageUrl={this.state.toShowLargeImage}
-//         onCloseModal={this.toggleModal}
-//       />
-//     )}
-//   {/* </div> */}
-// );

@@ -35,7 +35,6 @@ export class ImageGallery extends Component {
       } catch (error) {
         console.log('error', error);
       } finally {
-        // setStatus('resolved');
       }
     } else if (
       prevProps.searchValue === searchValue &&
@@ -56,7 +55,6 @@ export class ImageGallery extends Component {
         );
       } catch (error) {
       } finally {
-        // setStatus('resolved');
       }
     }
   }

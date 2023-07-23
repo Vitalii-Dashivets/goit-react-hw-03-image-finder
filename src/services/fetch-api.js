@@ -15,7 +15,6 @@ async function fetchData(searchValue, page) {
 
   const response = await axios.get(`${BASE_URL}?${searchParams}`);
   return response;
-  // return response.data.hits;
 }
 
 export { fetchData };
