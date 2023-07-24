@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import css from './ImageGalleryItem.module.css';
 
 export const ImageGalleryItem = ({
@@ -17,4 +18,10 @@ export const ImageGalleryItem = ({
       />
     </li>
   );
+};
+
+ImageGalleryItem.propTypes = {
+  smallImageUrl: PropTypes.string.isRequired,
+  largeImageUrl: PropTypes.string.isRequired,
+  showImage: PropTypes.func.isRequired,
 };

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import css from './Searchbar.module.css';
 
 export class Searchbar extends Component {
@@ -10,10 +11,14 @@ export class Searchbar extends Component {
     const { inputValue } = this.state;
     const { setAppState } = this.props;
     evt.preventDefault();
-    if (inputValue === '') {
+    if (inputValue === '' || inputValue === this.props.searchValue) {
       return;
     }
-    setAppState({ searchValue: inputValue.trim().toLowerCase() });
+    setAppState({
+      searchValue: inputValue.trim().toLowerCase(),
+      page: 1,
+      images: [],
+    });
   };
 
   onChangeInput = evt => {
@@ -43,3 +48,7 @@ export class Searchbar extends Component {
     );
   }
 }
+Searchbar.propTypes = {
+  setAppState: PropTypes.func.isRequired,
+  searchValue: PropTypes.string.isRequired,
+};

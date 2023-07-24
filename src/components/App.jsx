@@ -1,25 +1,82 @@
 import React, { Component } from 'react';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Button } from './Button/Button';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Loader } from './Loader/Loader';
 import { Modal } from './Modal/Modal';
 import { Searchbar } from './Searchbar/Searchbar';
+import { fetchData } from 'services/fetch-api';
+
+Notify.init({
+  width: '300px',
+  fontSize: '18px',
+  position: 'center-top',
+  timeout: '3000',
+  messageMaxLength: 150,
+  distance: '20px',
+  showOnlyTheLastOne: true,
+  warning: {
+    background: '#c24f98',
+    textColor: '#fff',
+    childClassName: 'notiflix-notify-warning',
+    notiflixIconColor: 'rgba(0,0,0,0.2)',
+    fontAwesomeClassName: 'fas fa-exclamation-circle',
+    fontAwesomeIconColor: 'rgba(0,0,0,1)',
+    backOverlayColor: 'rgba(238,191,49,0.2)',
+  },
+});
 
 export class App extends Component {
   state = {
+    images: [],
     searchValue: '',
     page: 1,
     toShowLargeImage: '',
     showModal: false,
-    status: 'idle',
+    showLoader: false,
+    showLoadMore: false,
   };
+
+  async componentDidUpdate(prevProps, prevState) {
+    const { searchValue, page } = this.state;
+
+    if (prevState.page !== page || prevState.searchValue !== searchValue) {
+      try {
+        this.setState({ showLoader: true });
+        this.setState({ showLoadMore: false });
+        const fetchResult = await fetchData(searchValue, page);
+        if (prevState.searchValue === searchValue) {
+          this.setState({
+            images: [...prevState.images, ...fetchResult],
+            showLoadMore: fetchResult.length < 12 ? false : true,
+          });
+        } else {
+          this.setState({
+            images: [...fetchResult],
+            showLoadMore: fetchResult.length < 12 ? false : true,
+          });
+        }
+
+        if (fetchResult.length === 0) {
+          throw new Error('Sorry, no results...');
+        }
+
+        this.setState({ showLoader: false });
+      } catch (error) {
+        this.setState({ showLoader: false });
+        this.setState({ showLoadMore: false });
+        Notify.warning(error.message);
+      }
+    } else {
+      return;
+    }
+  }
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
   onLoadMore = () => {
-    this.setAppState({ status: 'pending' });
     return this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
@@ -32,35 +89,24 @@ export class App extends Component {
     this.setState(obj);
   };
   render() {
-    const { searchValue, page, status, showModal } = this.state;
-    let showButton = false;
-    let showLoader = false;
+    const { searchValue, page, showLoader, showLoadMore, showModal, images } =
+      this.state;
 
-    if (status === 'idle') {
-      showButton = false;
-    }
-    if (status === 'pending') {
-      showLoader = true;
-    }
-    if (status === 'rejected') {
-      showLoader = false;
-      showButton = false;
-    }
-    if (status === 'resolved') {
-      showLoader = false;
-      showButton = true;
-    }
     return (
       <div>
-        <Searchbar setAppState={this.setAppState} />
+        <Searchbar
+          setAppState={this.setAppState}
+          searchValue={this.state.searchValue}
+        />
 
         <ImageGallery
           searchValue={searchValue}
           page={page}
+          images={images}
           setUrlLargeImage={this.toShowLargeImage}
           setAppState={this.setAppState}
         />
-        {showButton && <Button Click={this.onLoadMore} />}
+        {showLoadMore && <Button click={this.onLoadMore} />}
         {showModal && (
           <Modal
             largeImageUrl={this.state.toShowLargeImage}
