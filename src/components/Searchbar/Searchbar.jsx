@@ -5,19 +5,21 @@ export class Searchbar extends Component {
   state = {
     inputValue: '',
   };
+
   onSubmitForm = evt => {
     const { inputValue } = this.state;
-    const { setStatus, setSearchValue } = this.props;
+    const { setAppState } = this.props;
     evt.preventDefault();
     if (inputValue === '') {
       return;
     }
-    setStatus('pending');
-    setSearchValue(inputValue.trim().toLowerCase());
+    setAppState({ searchValue: inputValue.trim().toLowerCase() });
   };
+
   onChangeInput = evt => {
     return this.setState({ inputValue: evt.target.value });
   };
+
   render() {
     return (
       <header className={css.Searchbar}>

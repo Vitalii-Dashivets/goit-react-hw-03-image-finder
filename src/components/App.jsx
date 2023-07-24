@@ -12,19 +12,14 @@ export class App extends Component {
     toShowLargeImage: '',
     showModal: false,
     status: 'idle',
-    error: null,
   };
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({ showModal: !showModal }));
   };
 
-  setSearchValue = value => {
-    return this.setState({ searchValue: value });
-  };
-
   onLoadMore = () => {
-    this.setStatus('pending');
+    this.setAppState({ status: 'pending' });
     return this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
@@ -33,22 +28,23 @@ export class App extends Component {
     return this.setState({ toShowLargeImage: url });
   };
 
-  setStatus = value => {
-    this.setState({ status: value });
+  setAppState = obj => {
+    this.setState(obj);
   };
-
   render() {
     const { searchValue, page, status, showModal } = this.state;
     let showButton = false;
     let showLoader = false;
 
     if (status === 'idle') {
-      //  showButton = false;
+      showButton = false;
     }
     if (status === 'pending') {
       showLoader = true;
     }
     if (status === 'rejected') {
+      showLoader = false;
+      showButton = false;
     }
     if (status === 'resolved') {
       showLoader = false;
@@ -56,16 +52,13 @@ export class App extends Component {
     }
     return (
       <div>
-        <Searchbar
-          setSearchValue={this.setSearchValue}
-          setStatus={this.setStatus}
-        />
+        <Searchbar setAppState={this.setAppState} />
 
         <ImageGallery
           searchValue={searchValue}
           page={page}
           setUrlLargeImage={this.toShowLargeImage}
-          setStatus={this.setStatus}
+          setAppState={this.setAppState}
         />
         {showButton && <Button Click={this.onLoadMore} />}
         {showModal && (

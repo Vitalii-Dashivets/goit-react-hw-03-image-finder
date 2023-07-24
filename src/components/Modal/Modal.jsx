@@ -3,6 +3,7 @@ import css from './Modal.module.css';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#root_modal');
+
 export class Modal extends Component {
   closeModal = e => {
     if (e.code === 'Escape') {
