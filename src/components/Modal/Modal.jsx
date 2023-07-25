@@ -12,22 +12,20 @@ export class Modal extends Component {
     }
   };
   closeOverlay = e => {
-    if (e.target.nodeName !== 'IMG') {
+    if (e.target === e.currentTarget) {
       this.props.onCloseModal();
     }
   };
 
   componentDidMount() {
     window.addEventListener('keydown', this.closeModal);
-    window.addEventListener('click', this.closeOverlay);
   }
   componentWillUnmount() {
     window.removeEventListener('keydown', this.closeModal);
-    window.removeEventListener('click', this.closeOverlay);
   }
   render() {
     return createPortal(
-      <div className={css.Overlay}>
+      <div className={css.Overlay} onClick={this.closeOverlay}>
         <div className={css.Modal}>
           <img src={this.props.largeImageUrl} alt="" />
         </div>

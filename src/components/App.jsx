@@ -49,24 +49,15 @@ export class App extends Component {
           throw new Error('Sorry, no results...');
         }
         this.setState({
-          images: [...prevState.images, ...fetchResult],
-          showLoadMore: fetchResult.length < 12 ? false : true,
+          images: [...this.state.images, ...fetchResult],
+          showLoadMore: fetchResult.length === 12,
         });
-        // } else {
-        //   this.setState({
-        //     images: [...fetchResult],
-        //     showLoadMore: fetchResult.length < 12 ? false : true,
-        //   });
-        // }
-
-        this.setState({ showLoader: false });
       } catch (error) {
-        this.setState({ showLoader: false });
         this.setState({ showLoadMore: false });
         Notify.warning(error.message);
+      } finally {
+        this.setState({ showLoader: false });
       }
-    } else {
-      return;
     }
   }
 
@@ -84,15 +75,12 @@ export class App extends Component {
   };
 
   setAppState = value => {
-    this.setState(
-      prevState =>
-        prevState.searchValue !== value && {
-          page: 1,
-          images: [],
-          searchValue: value,
-          showLoadMore: false,
-        }
-    );
+    this.setState({
+      page: 1,
+      images: [],
+      searchValue: value,
+      showLoadMore: false,
+    });
   };
   render() {
     const { searchValue, page, showLoader, showLoadMore, showModal, images } =
