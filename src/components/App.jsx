@@ -43,23 +43,21 @@ export class App extends Component {
     if (prevState.page !== page || prevState.searchValue !== searchValue) {
       try {
         this.setState({ showLoader: true });
-        this.setState({ showLoadMore: false });
-        const fetchResult = await fetchData(searchValue, page);
-        if (prevState.searchValue === searchValue) {
-          this.setState({
-            images: [...prevState.images, ...fetchResult],
-            showLoadMore: fetchResult.length < 12 ? false : true,
-          });
-        } else {
-          this.setState({
-            images: [...fetchResult],
-            showLoadMore: fetchResult.length < 12 ? false : true,
-          });
-        }
 
+        const fetchResult = await fetchData(searchValue, page);
         if (fetchResult.length === 0) {
           throw new Error('Sorry, no results...');
         }
+        this.setState({
+          images: [...prevState.images, ...fetchResult],
+          showLoadMore: fetchResult.length < 12 ? false : true,
+        });
+        // } else {
+        //   this.setState({
+        //     images: [...fetchResult],
+        //     showLoadMore: fetchResult.length < 12 ? false : true,
+        //   });
+        // }
 
         this.setState({ showLoader: false });
       } catch (error) {
@@ -85,8 +83,16 @@ export class App extends Component {
     return this.setState({ toShowLargeImage: url });
   };
 
-  setAppState = obj => {
-    this.setState(obj);
+  setAppState = value => {
+    this.setState(
+      prevState =>
+        prevState.searchValue !== value && {
+          page: 1,
+          images: [],
+          searchValue: value,
+          showLoadMore: false,
+        }
+    );
   };
   render() {
     const { searchValue, page, showLoader, showLoadMore, showModal, images } =

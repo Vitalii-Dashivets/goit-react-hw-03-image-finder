@@ -14,11 +14,7 @@ export class Searchbar extends Component {
     if (inputValue === '' || inputValue === this.props.searchValue) {
       return;
     }
-    setAppState({
-      searchValue: inputValue.trim().toLowerCase(),
-      page: 1,
-      images: [],
-    });
+    setAppState(inputValue.trim().toLowerCase());
   };
 
   onChangeInput = evt => {
